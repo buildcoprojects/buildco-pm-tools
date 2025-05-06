@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build Co Projects - Scope of Works Generator for construction project documentation">
+    <title>Build Co Projects - Scope of Works Generator</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- External JS libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html-docx.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js" defer></script>
+    
+    <!-- Custom CSS and JS would be linked here -->
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="js/buildco.js" defer></script>
+</head>
+<body>
+    <!-- Skip to main content link for screen readers -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div class="container">
+        <header>
+            <h1>Build Co Projects Pty Ltd – Master Scope of Works</h1>
+            <div class="logo-container">
+                <img src="images/build-co-logo.png" alt="Build Co Projects Logo">
+            </div>
+        </header>
+
+        <main id="main-content">
+            <!-- Auto-save notification -->
+            <div id="auto-save-notification" class="auto-save-notification" aria-live="polite"></div>
+            
+            <!-- Form progress bar -->
+            <div class="form-progress" aria-label="Form completion progress">
+                <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+            </div>
+
+            <!-- Instructions accordion -->
+            <button class="collapsible" aria-expanded="false" aria-controls="instructions-content">
+                <span>How to Use This Form</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div id="instructions-content" class="content" aria-hidden="true">
+                <h2>Instructions</h2>
+                <ol>
+                    <li><strong>Fill in Project Information:</strong> Complete all fields in the Project Information section.</li>
+                    <li><strong>Select Trade:</strong> Choose the relevant trade from the dropdown menu. This will automatically populate the Scope of Works section with predefined trade-specific content.</li>
+                    <li><strong>Review Site Conditions:</strong> The Site Conditions section is pre-populated with standard Build Co requirements, but you can modify them as needed for your specific project.</li>
+                    <li><strong>Add Schedule of Rates items:</strong> Use the "Add Row" button to add items to the Schedule of Rates table. You can also copy and paste data from spreadsheets.</li>
+                    <li><strong>Generate Document:</strong> Choose to preview, export as PDF (for formal submission) or DOCX (for further editing in Microsoft Word).</li>
+                </ol>
+                <p><strong>Note:</strong> This form works entirely in your browser - no data is sent to any server. Your work is automatically saved locally on your device.</p>
+            </div>
+
+            <!-- Main form -->
+            <form id="sow-form" novalidate>
+                <!-- Validation summary -->
+                <div id="validation-summary" class="validation-summary" role="alert" aria-live="assertive" style="display: none;">
+                    <h3 class="validation-heading"></h3>
+                    <ul id="validation-errors" class="validation-errors-list"></ul>
+                </div>
+                
+                <!-- Project Information section -->
+                <section class="form-section" aria-labelledby="project-info-heading">
+                    <h2 id="project-info-heading">1. Project Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="project-name" class="required-label">Project Name</label>
+                            <div class="tooltip-container">
+                                <i class="fas fa-info-circle" aria-hidden="true"></i>
+                                <span class="tooltip-text">Enter the full official project name as it appears in contract documents</span>
+                            </div>
+                            <input type="text" id="project-name" required aria-required="true">
+                            <div id="project-name-error" class="field-error" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-number" class="required-label">Project Number</label>
+                            <input type="text" id="project-number" required aria-required="true">
+                            <div id="project-number-error" class="field-error" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="subcontractor-name" class="required-label">Subcontractor Name</label>
+                            <input type="text" id="subcontractor-name" required aria-required="true">
+                            <div id="subcontractor-name-error" class="field-error" aria-live="polite"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="date" class="required-label">Date</label>
+                            <input type="date" id="date" required aria-required="true">
+                            <div id="date-error" class="field-error" aria-live="polite"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Trade Selection section -->
+                <section class="form-section" aria-labelledby="trade-selection-heading">
+                    <h2 id="trade-selection-heading">2. Trade Selection</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="trade-select" class="required-label">Select Trade</label>
+                            <select id="trade-select" required aria-required="true">
+                                <option value="">-- Select Trade --</option>
+                                <option value="electrical">Electrical Services</option>
+                                <option value="joinery">Joinery</option>
+                                <option value="workstations">Workstations</option>
+                                <option value="demolition">Demolition</option>
+                                <option value="painting">Painting</option>
+                                <option value="fire">Fire Services</option>
+                                <option value="security">Security Services</option>
+                                <option value="mechanical">Mechanical Services</option>
+                                <option value="floor">Floor Finishes</option>
+                                <option value="hydraulics">Hydraulics</option>
+                                <option value="custom">Other (Custom)</option>
+                            </select>
+                            <div id="trade-select-error" class="field-error" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <div class="form-row" id="custom-trade-row" style="display: none;">
+                        <div class="form-group">
+                            <label for="custom-trade" class="required-label">Custom Trade Name</label>
+                            <input type="text" id="custom-trade" placeholder="Enter custom trade name">
+                            <div id="custom-trade-error" class="field-error" aria-live="polite"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="scope-of-works">Scope of Works</label>
+                            <div class="textarea-container">
+                                <textarea id="scope-of-works" rows="10"></textarea>
+                                <div class="char-counter">
+                                    <span id="scope-counter">0</span>/5000 characters
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Site Conditions section -->
+                <section class="form-section" aria-labelledby="site-conditions-heading">
+                    <h2 id="site-conditions-heading">3. Site Conditions</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <div class="textarea-container">
+                                <textarea id="site-conditions-content" rows="10"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Schedule of Rates section -->
+                <section class="form-section" aria-labelledby="schedule-heading">
+                    <h2 id="schedule-heading">4. Schedule of Rates</h2>
+                    <div class="table-actions">
+                        <div>
+                            <button type="button" class="btn btn-sm btn-secondary btn-add-row">
+                                <i class="fas fa-plus"></i> Add Row
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary btn-clear-table">
+                                <i class="fas fa-trash"></i> Clear All
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary btn-sort-table">
+                                <i class="fas fa-sort-numeric-down"></i> Sort by Item
+                            </button>
+                        </div>
+                        <div class="table-actions-right">
+                            <button type="button" class="btn btn-sm btn-secondary btn-import-csv">
+                                <i class="fas fa-file-import"></i> Import CSV
+                            </button>
+                            <button type="button" class="btn btn-sm btn-secondary btn-export-csv">
+                                <i class="fas fa-file-export"></i> Export CSV
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="schedule-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Description</th>
+                                    <th>Unit</th>
+                                    <th>Quantity</th>
+                                    <th>Rate ($)</th>
+                                    <th>Amount ($)</th>
+                                    <th class="no-print">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td><input type="text" class="description" placeholder="Enter description"></td>
+                                    <td><input type="text" class="unit" placeholder="e.g., ea"></td>
+                                    <td><input type="number" class="quantity" min="0" step="0.01"></td>
+                                    <td><input type="number" class="rate" min="0" step="0.01"></td>
+                                    <td class="amount">$0.00</td>
+                                    <td class="no-print">
+                                        <button type="button" class="btn btn-sm btn-icon btn-delete" aria-label="Delete row">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-icon btn-move" aria-label="Move row">
+                                            <i class="fas fa-grip-lines"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="5" style="text-align: right;"><strong>Total:</strong></td>
+                                    <td id="total-amount">$0.00</td>
+                                    <td class="no-print"></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Form actions -->
+                <div class="button-container">
+                    <button type="button" id="btn-preview" class="btn btn-secondary" data-action="preview">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <div class="export-options">
+                        <button type="button" id="btn-export-pdf" class="btn btn-primary" data-action="pdf">
+                            <i class="fas fa-file-pdf"></i> Export as PDF
+                        </button>
+                        <button type="button" id="btn-export-docx" class="btn btn-primary" data-action="docx">
+                            <i class="fas fa-file-word"></i> Export as DOCX
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Preview modal -->
+            <div id="preview-container" role="dialog" aria-modal="true" aria-labelledby="preview-title" aria-hidden="true">
+                <div id="preview-content">
+                    <div class="preview-header">
+                        <h2 id="preview-title">Document Preview</h2>
+                        <button id="close-preview" aria-label="Close preview">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div id="document-preview"></div>
+                    <div id="preview-actions" class="preview-actions">
+                        <button id="btn-print" class="btn btn-secondary print-btn">
+                            <i class="fas fa-print"></i> Print Preview
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- File import dialog -->
+            <div id="import-dialog" class="modal" role="dialog" aria-modal="true" aria-labelledby="import-title" aria-hidden="true">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="import-title">Import CSV Data</h3>
+                        <button class="modal-close" aria-label="Close dialog">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Select a CSV file to import data into the Schedule of Rates table.</p>
+                        <div class="file-input-container">
+                            <input type="file" id="csv-file-input" accept=".csv" aria-label="Select CSV file">
+                            <label for="csv-file-input" class="btn btn-secondary">
+                                <i class="fas fa-file-upload"></i> Select File
+                            </label>
+                            <span id="file-name">No file selected</span>
+                        </div>
+                        <div class="import-options">
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="has-header-row" checked>
+                                <label for="has-header-row">First row contains headers</label>
+                            </div>
+                            <div class="checkbox-container">
+                                <input type="checkbox" id="clear-existing-data" checked>
+                                <label for="clear-existing-data">Clear existing data before import</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btn-cancel-import" class="btn btn-secondary">Cancel</button>
+                        <button id="btn-confirm-import" class="btn btn-primary">Import Data</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>Document Number: BCP-SOW-ANNEXB-V1 | Version: 1.0 | Issue Date: 05/05/2025</p>
+            <p>&copy; Build Co Projects Pty Ltd 2025. All rights reserved.</p>
+        </footer>
+        
+        <!-- Toast container for notifications -->
+        <div id="toast-container" class="toast-container"></div>
+        
+        <!-- Loading indicator -->
+        <div id="loading-indicator" class="loading-indicator" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p id="loading-message">Loading...</p>
+        </div>
+    </div>
+</body>
+</html>
