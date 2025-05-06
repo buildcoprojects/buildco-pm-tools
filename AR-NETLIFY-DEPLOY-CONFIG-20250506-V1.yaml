@@ -1,0 +1,55 @@
+artefact:
+  id: AR-NETLIFY-DEPLOY-CONFIG-20250506-V1
+  classification: Deployment Configuration Artefact
+  issued_by: Build Co Projects Pty Ltd
+  date_issued: 2025-05-06
+  execution_mode: Production Deployment
+
+  deployment_config:
+    target: Netlify
+    site_name: buildco-pm-tools
+    site_id: a374db01-42d9-457b-8276-f27d9939e9c2
+    repository: https://github.com/buildcoprojects/buildco-pm-tools
+    branch: main
+    production_url: https://buildco-pm-tools.netlify.app
+
+  assets:
+    - index.html              # formerly separated-html.html
+    - separated-css.css       # CSS styles
+    - buildco-data.js         # must load first
+    - buildco-table.js        # table handler
+    - buildco-main.js         # final logic layer
+    - images/build-co-logo.png
+    - _headers                # security headers
+    - netlify.toml            # Netlify configuration
+
+  deployment_methods:
+    - type: GitHub Workflow
+      file: .github/workflows/netlify-deploy.yml
+      trigger: Push to main branch
+      
+    - type: Manual Script (Bash)
+      file: deploy-to-netlify.sh
+      command: "./deploy-to-netlify.sh"
+      
+    - type: Manual Script (Node.js)
+      file: netlify.js
+      command: "node netlify.js"
+
+  verification:
+    file: verify-deployment.sh
+    command: "./verify-deployment.sh"
+    checklist:
+      - "Confirm Netlify build status is ✅"
+      - "Check live preview at https://buildco-pm-tools.netlify.app"
+      - "Validate JS functionality (trade scopes, table ops, preview/export)"
+      - "Confirm console shows no JS errors"
+
+  credentials:
+    netlify_pat: "[REDACTED - STORED IN ENVIRONMENT]"
+    github_pat: "[REDACTED - STORED IN ENVIRONMENT]"
+    
+  original_artefact_reference: 
+    id: AR-NETLIFY-AUTO-DEPLOY-CONFIG-V1
+    sha3_256: 39e22938fe52433e7e522cf539be9fa1bb35be9c374f369362b63cc3d81d7d02
+    anchor: https://gist.github.com/buildcoprojects/07f85eb7e4e0f722cbf4513c6c8503f1
