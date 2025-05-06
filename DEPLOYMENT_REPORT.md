@@ -45,4 +45,4 @@ The site accessibility check returned a 404 status code. This could be due to:
   ```
 - Configure GitHub repository with Netlify secrets:
   - NETLIFY_AUTH_TOKEN: [REDACTED - STORED IN ENVIRONMENT]
-  - NETLIFY_SITE_ID: a374db01-42d9-457b-8276-f27d9939e9c2
+  - NETLIFY_SITE_ID: 1ceeeee6-b407-4fc6-82b2-beb28f164e5f

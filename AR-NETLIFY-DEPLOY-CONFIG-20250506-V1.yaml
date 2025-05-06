@@ -8,7 +8,7 @@ artefact:
   deployment_config:
     target: Netlify
     site_name: buildco-pm-tools
-    site_id: a374db01-42d9-457b-8276-f27d9939e9c2
+    site_id: 1ceeeee6-b407-4fc6-82b2-beb28f164e5f
     repository: https://github.com/buildcoprojects/buildco-pm-tools
     branch: main
     production_url: https://buildco-pm-tools.netlify.app

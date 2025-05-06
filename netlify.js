@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 
 // Configuration
 const NETLIFY_AUTH_TOKEN = process.env.NETLIFY_AUTH_TOKEN || 'REPLACE_WITH_TOKEN';
-const SITE_ID = 'a374db01-42d9-457b-8276-f27d9939e9c2';
+const SITE_ID = '1ceeeee6-b407-4fc6-82b2-beb28f164e5f';
 const DEPLOY_DIR = __dirname;
 
 // Create a deployment ZIP file
